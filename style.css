@@ -49,6 +49,7 @@ a {
   object-fit: cover;
   pointer-events: none;
   display: none;
+  background: #090909;
 }
 
 .bg-video[style*="display: block"] {

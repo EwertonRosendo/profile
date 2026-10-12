@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <video id="backgroundVideo" class="bg-video" muted loop playsinline
+  <video id="backgroundVideo" class="bg-video" loop playsinline preload="auto"
     disablepictureinpicture controlslist="nofullscreen"
     src="assets/background.mp4"
     aria-hidden="true"></video>
@@ -45,8 +45,6 @@
     </button>
   </div>
 
-  <audio id="trackAudio" loop preload="none"
-    src="assets/background.mp4"></audio>
 
   <main class="page-shell" id="profilePage" aria-hidden="true">
     <section class="profile-card" aria-labelledby="profileName">
