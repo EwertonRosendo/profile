@@ -579,3 +579,11 @@ body.entered .page-shell {
     transition-duration: .01ms !important;
   }
 }
+
+.profile-photo {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  object-position: center 25%;
+  border-radius: 50%;
+}
