@@ -7,6 +7,7 @@ const backgroundVideo = document.getElementById("backgroundVideo");
 const backgroundChoices = [
   { video: "assets/background.mp4", phrase: "you wanna cook" },
   { video: "assets/background_2.mp4", phrase: "it's all good man" },
+  { video: "assets/background_3.mp4", phrase: "we gotta get away from here" },
 ];
 
 // Pick one entry randomly when the page opens and keep that pair for this visit.
