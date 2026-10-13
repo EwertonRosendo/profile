@@ -2,6 +2,19 @@ const introScreen = document.getElementById("introScreen");
 const profilePage = document.getElementById("profilePage");
 const backgroundVideo = document.getElementById("backgroundVideo");
 
+// Each entry pairs one background video with the phrase shown on the intro screen.
+// Add or remove entries here as you add/remove videos in the assets folder.
+const backgroundChoices = [
+  { video: "assets/background.mp4", phrase: "you wanna cook" },
+  { video: "assets/background_2.mp4", phrase: "it's all good man" },
+];
+
+// Pick one entry randomly when the page opens and keep that pair for this visit.
+const selectedBackground = backgroundChoices[Math.floor(Math.random() * backgroundChoices.length)];
+const introCaption = document.querySelector(".intro-caption");
+if (introCaption) introCaption.textContent = selectedBackground.phrase;
+if (backgroundVideo) backgroundVideo.src = selectedBackground.video;
+
 const trackDock = document.getElementById("trackDock");
 const trackPanel = document.getElementById("trackPanel");
 const trackLauncher = document.getElementById("trackLauncher");
@@ -17,7 +30,7 @@ const volumeSeek = document.getElementById("volumeSeek");
 
 const discordCard = document.getElementById("discordCard");
 const discordPrimary = document.getElementById("discordPrimary");
-const DISCORD_USER_ID = "494992636046868481";
+const DISCORD_USER_ID = "692029790911201390";
 
 const playIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.4 9.4a3 3 0 0 1 0 5.2l-12.8 7C6.6 22.7 4 21.3 4 19V5c0-2.3 2.5-3.7 4.6-2.6z"/></svg>';
 const pauseIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>';
