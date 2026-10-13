@@ -9,6 +9,9 @@ const backgroundChoices = [
   { video: "assets/background_2.mp4", phrase: "it's all good man" },
   // { video: "assets/background_3.mp4", phrase: "we gotta get away from here" }, // low quality
   { video: "assets/background_4.mp4", phrase: "the greatest" },
+  { video: "assets/background_5_severance.mp4", phrase: "hi there" },
+  { video: "assets/background_6_inter.mp4", phrase: "." },
+  { video: "assets/background_7_oppenheimer.mp4", phrase: "now i am become death" },
 ];
 
 // Pick one entry randomly when the page opens and keep that pair for this visit.
