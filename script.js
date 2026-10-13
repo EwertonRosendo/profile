@@ -31,7 +31,7 @@ const volumeSeek = document.getElementById("volumeSeek");
 
 const discordCard = document.getElementById("discordCard");
 const discordPrimary = document.getElementById("discordPrimary");
-const DISCORD_USER_ID = "692029790911201390";
+const DISCORD_USER_ID = "494992636046868481";
 
 const playIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.4 9.4a3 3 0 0 1 0 5.2l-12.8 7C6.6 22.7 4 21.3 4 19V5c0-2.3 2.5-3.7 4.6-2.6z"/></svg>';
 const pauseIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>';
