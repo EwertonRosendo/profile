@@ -264,24 +264,31 @@ body.entered .page-shell {
 
 .discord-status {
   position: absolute;
-  right: -4px;
-  bottom: -4px;
-  display: grid;
-  place-items: center;
-  width: 22px;
-  height: 22px;
+  right: -3px;
+  bottom: -3px;
+  width: 17px;
+  height: 17px;
   border-radius: 50%;
-  border: 2px solid #292524;
-  background: #292524;
+  border: 3px solid #171717;
+  background: #747f8d;
 }
+.discord-status.online { background: #23a55a; }
+.discord-status.idle { background: #f0b232; }
+.discord-status.dnd { background: #f23f43; }
+.discord-status.offline { background: #80848e; }
 
-.discord-status svg {
-  fill: #fff;
+.discord-activity-image {
+  flex: 0 0 52px;
+  width: 52px;
+  height: 52px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-left: auto;
+  border: 1px solid var(--border);
 }
-
-.discord-status.offline svg {
-  opacity: .55;
-}
+.discord-activity-image.hidden { display: none; }
+.discord-card .discord-body { flex: 1 1 auto; }
+.discord-line.secondary { overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow-wrap: anywhere; }
 
 .discord-body {
   flex: 1;

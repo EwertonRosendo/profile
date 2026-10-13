@@ -17,7 +17,7 @@ const volumeSeek = document.getElementById("volumeSeek");
 
 const discordCard = document.getElementById("discordCard");
 const discordPrimary = document.getElementById("discordPrimary");
-const DISCORD_USER_ID = "692029790911201390";
+const DISCORD_USER_ID = "494992636046868481";
 
 const playIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.4 9.4a3 3 0 0 1 0 5.2l-12.8 7C6.6 22.7 4 21.3 4 19V5c0-2.3 2.5-3.7 4.6-2.6z"/></svg>';
 const pauseIcon = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>';
@@ -144,47 +144,88 @@ applyVolume();
 setPlaying(false);
 
 async function loadDiscordPresence() {
-  if (!discordCard || !discordPrimary) {
-    return;
-  }
+  if (!discordCard || !discordPrimary) return;
 
+  const activityEl = document.getElementById("discordActivity");
+  const activityImage = document.getElementById("discordActivityImage");
   discordCard.classList.add("is-loading");
 
   try {
-    const response = await fetch(
-      `https://api.lanyard.rest/v1/users/${DISCORD_USER_ID}`
-    );
+    const response = await fetch(`https://api.lanyard.rest/v1/users/${DISCORD_USER_ID}`);
+    if (!response.ok) throw new Error("Lanyard request failed");
     const payload = await response.json();
+    if (!payload.success || !payload.data) throw new Error("Presence unavailable");
 
-    if (!payload.success || !payload.data) {
-      throw new Error("presence unavailable");
-    }
-
-    const user = payload.data.discord_user;
+    const data = payload.data;
+    const user = data.discord_user;
     const avatarWrap = discordCard.querySelector(".discord-avatar-wrap");
-    const skeleton = discordCard.querySelector(".discord-avatar-skeleton");
+    let avatar = discordCard.querySelector(".discord-avatar");
 
-    if (user?.avatar && avatarWrap && skeleton) {
+    if (user?.id && user?.avatar && avatarWrap) {
+      if (!avatar) {
+        avatar = document.createElement("img");
+        avatar.className = "discord-avatar";
+        const skeleton = avatarWrap.querySelector(".discord-avatar-skeleton");
+        if (skeleton) skeleton.replaceWith(avatar);
+        else avatarWrap.prepend(avatar);
+      }
       const ext = user.avatar.startsWith("a_") ? "gif" : "png";
-      const img = document.createElement("img");
-      img.className = "discord-avatar";
-      img.alt = user.global_name || user.username || "Discord user";
-      img.src = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${ext}?size=128`;
-      skeleton.replaceWith(img);
+      avatar.src = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${ext}?size=128`;
+      avatar.alt = user.global_name || user.username || "Discord user";
     }
 
     discordPrimary.textContent = user?.global_name || user?.username || "Discord";
 
-    const status = payload.data.discord_status || "offline";
+    const status = data.discord_status || "offline";
     const statusEl = discordCard.querySelector(".discord-status");
-    statusEl?.classList.toggle("offline", status === "offline");
-    statusEl?.setAttribute("title", `Discord ${status}`);
+    if (statusEl) {
+      statusEl.dataset.status = status;
+      statusEl.className = `discord-status ${status}`;
+      statusEl.title = `Discord ${status}`;
+      statusEl.innerHTML = "";
+    }
+
+    // Prefer Spotify metadata when available; otherwise show the first rich activity.
+    const spotify = data.spotify;
+    const activities = Array.isArray(data.activities) ? data.activities : [];
+    const activity = activities.find(item => item.type !== 4 && item.name !== "Spotify") || activities[0];
+
+    if (spotify && activityEl) {
+      activityEl.textContent = `Listening to ${spotify.song} by ${spotify.artist}`;
+      if (activityImage && spotify.album_art_url) {
+        activityImage.src = spotify.album_art_url;
+        activityImage.alt = spotify.album ? `Album cover: ${spotify.album}` : "Spotify album cover";
+        activityImage.classList.remove("hidden");
+      }
+    } else if (activity && activityEl) {
+      const details = activity.details || activity.state || activity.name || "Active on Discord";
+      const state = activity.details && activity.state ? ` — ${activity.state}` : "";
+      activityEl.textContent = `${activity.name}: ${details}${state}`;
+      const imageKey = activity.assets?.large_image;
+      if (activityImage && imageKey) {
+        let imageUrl = null;
+        if (imageKey.startsWith("mp:") || imageKey.startsWith("https://")) imageUrl = imageKey.startsWith("mp:") ? `https://media.discordapp.net/${imageKey.slice(3)}` : imageKey;
+        else if (activity.application_id) imageUrl = `https://cdn.discordapp.com/app-assets/${activity.application_id}/${imageKey}.png`;
+        if (imageUrl) {
+          activityImage.src = imageUrl;
+          activityImage.alt = `${activity.name} activity artwork`;
+          activityImage.classList.remove("hidden");
+        } else activityImage.classList.add("hidden");
+      } else activityImage?.classList.add("hidden");
+    } else if (activityEl) {
+      activityEl.textContent = status === "offline" ? "Offline" : "Online";
+      activityImage?.classList.add("hidden");
+    }
 
     discordCard.classList.remove("is-loading");
-  } catch {
-    discordPrimary.textContent = "Loading";
-    discordCard.classList.add("is-loading");
+  } catch (error) {
+    console.warn("Could not load Discord presence:", error);
+    discordPrimary.textContent = "rosendo";
+    if (activityEl) activityEl.textContent = "Discord presence unavailable";
+    discordCard.classList.remove("is-loading");
   }
 }
 
+// Refresh presence automatically so the card follows changes in Discord.
 loadDiscordPresence();
+setInterval(loadDiscordPresence, 30000);
